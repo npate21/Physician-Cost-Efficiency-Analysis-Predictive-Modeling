@@ -1,7 +1,7 @@
 # Physician Cost Efficiency Analysis Using BCBS Medicare Data
 
 ## Overview
-This project analyzes physician-level healthcare data provided by **Blue Cross Blue Shield (BCBS)** and enriched with Medicare features to understand variation in **physician cost efficiency**. The analysis combines exploratory data analysis, responsible feature selection, and predictive modeling to support **data-driven decision-making for healthcare insurance organizations**.
+This project analyzes physician-level healthcare data provided by **Blue Cross Blue Shield (BCBS)** and enriched with Medicare features to understand variation in **physician cost efficiency**. The analysis combines exploratory data analysis, rigorous data leakage detection, and predictive modeling to support **data-driven decision-making for healthcare insurance organizations**.
 
 The project is designed as a **decision-support analytics tool**, not as an evaluation or ranking system for individual physicians.
 
@@ -19,7 +19,7 @@ This project addresses that challenge by analyzing physician efficiency patterns
 ---
 
 ## Data Description
-- **Unit of analysis:** Individual physicians  
+- **Dataset size:** 7,393 physicians across 20 features
 - **Target variable:** `physician_efficiency`  
   - Continuous, normalized efficiency score  
   - Lower values indicate more cost-efficient care  
@@ -39,11 +39,11 @@ The dataset contains missing values and engineered variables, requiring careful 
 ## Methodology
 
 ### 1. Exploratory Data Analysis (EDA)
-- Examined the distribution of physician efficiency across specialties
-- Analyzed relationships between efficiency, experience, geography, and patient risk
+- Examined the distribution of physician efficiency across 68 medical specialties
+- Analyzed relationships between efficiency, patient risk, and utilization patterns
 - Identified variables that appeared overly correlated with the target and required further scrutiny
 
-### 2. Feature Evaluation & Data Integrity
+### 2. Data Leakage & Feature Selection
 - Removed non-predictive identifiers (e.g., physician ID)
 - Excluded leaky features derived from the target variable
 - Preserved the continuous nature of physician efficiency
@@ -51,52 +51,52 @@ The dataset contains missing values and engineered variables, requiring careful 
 
 ### 3. Predictive Modeling
 - Framed the problem as a **regression task**
-- Built a **Decision Tree regression model** to estimate physician efficiency
-- Selected the model for interpretability and ability to capture non-linear relationships
+- Built a **Random Forest model** to estimate physician efficiency
+- Selected the model for interpretability and ability to capture non-linear relationships between patient risk and costs
 - Evaluated performance using regression-appropriate metrics:
   - Mean Absolute Error (MAE)
   - Root Mean Squared Error (RMSE)
   - R² (coefficient of determination)
 
-### 4. Model Validation
-- Performed **5-fold cross-validation** to confirm generalization
-- Observed consistently high R² values with very low variance across folds
-- Validation results reduced the likelihood of overfitting or residual data leakage
+### 4. Model Evaluation
+- Train-test split: 75/25
+- Validation: 5-fold cross-validation to ensure generalization
+- Metrics: MAE, RMSE, R² for comprehensive performance assessment
 
 ---
 
 ## Model Performance
 
 **Test Set Metrics**
-- **MAE:** 0.0074  
-- **RMSE:** 0.0092  
-- **R²:** 0.9993  
+- **MAE:** 0.2190  
+- **RMSE:** 0.3040 
+- **R²:** 0.2609  
 
 **Cross-Validation**
-- **Mean R²:** 0.9993  
-- **Standard Deviation:** 0.00003  
+- **Mean R²:** 0.2733  
+- **Standard Deviation:** 0.0254 
 
-These results indicate strong explanatory power and stable performance across data splits.
+These results indicate moderate predictive power with consistent performance across data splits. In the healthcare context, where data exhibits high variability due to complex interacting factors, an R² of approximately 0.27 represents meaningful predictive capability.
 
 ---
 
 ## Key Findings
-- Physician cost efficiency is primarily influenced by **patient risk and Medicare utilization patterns**
-- Cost variation is largely **systemic**, not attributable to individual physician behavior alone
-- Non-linear relationships highlight thresholds where patient complexity significantly impacts costs
-- Certain engineered features can artificially inflate performance if not carefully excluded
+The Random Forest model identified the following key drivers of physician cost efficiency:
+- Patient complexity measures (HCC risk scores, Medicare utilization patterns)
+- Medicare patient volume
+- Engineered feature 3 (patient complexity indicator)
 
 ---
 
 ## Business Impact & Use Case
 BCBS can use insights from this analysis to:
-- Identify systemic cost drivers across physician populations
-- Support value-based care and reimbursement strategies
-- Inform provider engagement and resource allocation
-- Prioritize areas for deeper operational or clinical review
-- Make fairer, data-informed cost management decisions
+- **Value-based care programs:** Design fair reimbursement models that account for patient risk factors, ensuring physicians treating higher-complexity populations are not penalized
+- **Resource allocation:** Identify and prioritize high-risk patient populations that require additional support and resources to improve cost efficiency
+- **Provider engagement:** Focus education and intervention strategies on systemic factors (care coordination, utilization management) rather than individual physician performance
+- **Cost forecasting:** Leverage patient risk scores and Medicare utilization patterns as key predictors for more accurate healthcare cost projections
+- **Policy development:** Create evidence-based policies that recognize cost variation is largely driven by patient complexity, not physician behavior, leading to fairer and more effective cost management decisions
 
 ---
 
 ## Conclusion
-The Decision Tree regression model demonstrates strong and stable performance (**MAE = 0.0074, RMSE = 0.0092, R² = 0.9993**), making it well-suited for identifying key drivers of physician cost efficiency. This project illustrates how responsible analytics can support BCBS in understanding cost variation and making informed, ethical, data-driven business decisions.
+The Random Forest regression model demonstrates meaningful predictive performance (**MAE = 0.2190, RMSE = 0.3040, R² = 0.2609**), making it well-suited for identifying key drivers of physician cost efficiency. This project illustrates how responsible analytics—including rigorous data leakage detection—can support BCBS in understanding cost variation and making informed, ethical, data-driven business decisions.
